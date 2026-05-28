@@ -29,8 +29,5 @@ print(z)
 def sigmoid(x):
     return 1 / (1 + torch.exp(-x))
 
-
 a = sigmoid(z)
 print(a)
-
-
