@@ -1,8 +1,5 @@
 import torch
 from mnist import MNIST
-import random
-import matplotlib.pyplot as plt
-import math
 
 MNIST_dataset = MNIST('dataset')
 
