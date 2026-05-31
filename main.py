@@ -59,6 +59,7 @@ z2 = a @ weights2 + b2
 a2 = sigmoid(z2)
 # print(a2.shape)  # Should be (60000, 1)
 
+# Define the log loss function
 def log_loss(y_true, y_pred):
     epsilon = 1e-15  # Small constant to prevent log(0)
     y_pred = torch.clamp(y_pred, epsilon, 1 - epsilon)  # Clamp predictions to avoid log(0)
