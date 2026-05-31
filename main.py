@@ -1,6 +1,11 @@
 import torch
 from mnist import MNIST
 
+dtype = torch.float
+device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
+print(f"Using {device} device")
+torch.set_default_device(device)
+
 # Define the maximum pixel value for normalization
 MAX_PIXEL_VALUE = 255.0
 
