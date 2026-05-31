@@ -41,7 +41,7 @@ if __name__ == "__main__":
     testing_data_images = torch.tensor(testing_data_images, dtype=torch.float32) / MAX_PIXEL_VALUE
     testing_data_labels = torch.tensor(testing_data_labels, dtype=torch.float32)
 
-    # Create the MNIST dataset
+    # Create the MNIST dataset using pytorch's Dataset class
     mnist_train_dataset = MNISTDataset(training_data_images, training_data_labels) 
     mnist_test_dataset = MNISTDataset(testing_data_images, testing_data_labels)
 
