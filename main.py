@@ -9,8 +9,9 @@ if __name__ == "__main__":
     import torch
 
     BATCH_SIZE = 32  # Define the batch size for training and testing
-    LEARNING_RATE = 0.1  # Define the learning rate for the optimizer
-    NUMBER_OF_EPOCHS = 15  # Define the number of epochs for training the model
+    LEARNING_RATE = 0.05  # Define the learning rate for the optimizer
+    NUMBER_OF_EPOCHS = 5  # Define the number of epochs for training the model
+    HIDDEN_SIZES = [784, 128, 64, 10]  # Define the size of the hidden layer in the neural network
 
     # Preprocess the MNIST dataset and obtain the training and testing data
     training_data_images, training_data_labels_one_hot, testing_data_images, testing_data_labels_one_hot = preprocess_data()
@@ -23,18 +24,14 @@ if __name__ == "__main__":
     train_loader = DataLoader(mnist_train_dataset, batch_size=BATCH_SIZE, shuffle=True)
     test_loader = DataLoader(mnist_test_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
-    # Define the input size, hidden layer size, and output size for the neural network
-    input_size = 784  # Number of input features (28x28 pixels for MNIST)
-    hidden_size = 1000   # Size of the hidden layer
-    output_size = 10   # Size of the output layer (for 10-class classification)
-
     # Create an instance of the SimpleNN class    
-    model = SimpleNN(input_size, hidden_size, output_size)
+    model = SimpleNN(HIDDEN_SIZES)
 
     loss_function = CrossEntropyLoss()  # Define the loss function for training the model
 
     optimiser = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)  # Define the optimizer for updating model parameters
 
+    # Define the training function to train the model on the training dataset
     def train(model, train_loader, loss_function, optimiser):
         size = len(train_loader.dataset)  # Get the total number of samples in the training dataset
         model.train()  # Set the model to training mode
@@ -49,6 +46,7 @@ if __name__ == "__main__":
             if batch % 100 == 0:
                 print(f"Batch: {batch + 1}, Batch Loss: {loss.item()}")  # Print the loss every 100 batches
 
+    # Define the testing function to evaluate the model on the testing dataset
     def test(model, test_loader, loss_function):
         size = len(test_loader.dataset)  # Get the total number of samples in the testing dataset
         model.eval()  # Set the model to evaluation mode
