@@ -9,7 +9,7 @@ class SimpleNN(nn.Module):
 
     # Define the forward pass of the neural network
     def forward(self, x):
-        x = torch.sigmoid(self.fc1(x))  # Apply sigmoid activation to the output of the first layer
+        x = torch.relu(self.fc1(x))  # Apply ReLU activation to the output of the first layer
         x = torch.softmax(self.fc2(x), dim=1)  # Apply softmax activation to the output of the second layer
         return x
     
