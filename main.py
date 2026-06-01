@@ -66,3 +66,6 @@ if __name__ == "__main__":
         train(model, train_loader, loss_function, optimiser)  # Train the model using the defined training function
         test(model, test_loader, loss_function)  # Test the model using the defined testing function
     print("Training complete!")
+
+    # save the trained model to a file
+    torch.save(model.state_dict(), "trained_models/mnist_model.pth")  # Save the model parameters to a file for later use
