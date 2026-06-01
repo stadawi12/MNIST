@@ -1,6 +1,6 @@
 from preprocess_data import preprocess_data
 from dataloader import MNISTDataset
-from models import SimpleNN
+from neural_network import SimpleNN
 
 if __name__ == "__main__":
 
@@ -8,9 +8,9 @@ if __name__ == "__main__":
     from torch.nn import CrossEntropyLoss
     import torch
 
-    BATCH_SIZE = 32  # Define the batch size for training and testing
+    BATCH_SIZE = 64  # Define the batch size for training and testing
     LEARNING_RATE = 0.05  # Define the learning rate for the optimizer
-    NUMBER_OF_EPOCHS = 5  # Define the number of epochs for training the model
+    NUMBER_OF_EPOCHS = 10  # Define the number of epochs for training the model
     HIDDEN_SIZES = [784, 128, 64, 10]  # Define the size of the hidden layer in the neural network
 
     # Preprocess the MNIST dataset and obtain the training and testing data
@@ -44,7 +44,7 @@ if __name__ == "__main__":
             optimiser.step()  # Update model parameters using the optimizer
             optimiser.zero_grad()  # Clear the gradients for the next iteration
             if batch % 100 == 0:
-                print(f"Batch: {batch + 1}, Batch Loss: {loss.item()}")  # Print the loss every 100 batches
+                print(f"Batch: {batch}, Batch Loss: {loss.item()}")  # Print the loss every 100 batches
 
     # Define the testing function to evaluate the model on the testing dataset
     def test(model, test_loader, loss_function):
