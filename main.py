@@ -88,18 +88,21 @@ if __name__ == "__main__":
 
     # Define the testing function to evaluate the model on the testing dataset
     def test(model, test_loader, loss_function):
-        size = len(test_loader.dataset)  # Get the total number of samples in the testing dataset
+        number_of_batches = len(test_loader)
+        number_of_samples = len(test_loader.dataset)
         model.eval()  # Set the model to evaluation mode
-        test_loss, correct = 0, 0
+        correct = 0
+        running_test_loss = 0.0
         with torch.no_grad():  # Disable gradient computation for testing
             for images, labels in test_loader:
                 pred = model(images)  # Forward pass through the model to get predictions
-                test_loss += loss_function(pred, labels).item()  # Accumulate the test loss
+                test_loss = loss_function(pred, labels)  # Compute the loss for the current batch and accumulate it
+                running_test_loss += test_loss.item()  # Accumulate the loss for the current batch to compute the average loss later
                 correct += (pred.argmax(1) == labels.argmax(1)).type(torch.float).sum().item()  # Count correct predictions
 
-        test_loss /= size  # Compute average test loss
-        accuracy = correct / size  # Compute accuracy of the model on the test dataset
-        print(f"Test Error: \n Accuracy: {(100*accuracy):>0.1f}%, Avg loss: {test_loss:>8f} \n")  # Print the test results
+        running_test_loss /= number_of_batches  # Compute average test loss
+        accuracy = correct / number_of_samples  # Compute accuracy of the model on the test dataset
+        print(f"Test Error: \n Accuracy: {(100*accuracy):>0.1f}%, Avg loss: {running_test_loss:>8f} \n")  # Print the test results
 
     train_losses = []  # Initialize a list to store the losses during training
     
