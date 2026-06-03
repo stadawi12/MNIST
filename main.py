@@ -138,12 +138,19 @@ if __name__ == "__main__":
 
     print("Training complete!")
 
+    # Initialize a list to store the average training loss for each epoch for plotting the training progress over time
     y = []
+
+    # Calculate the average training loss for each epoch and store it in the list y for plotting
     for train_loss in train_losses:
-        sum_of_losses = sum(train_loss)  # Calculate the sum of losses for the current epoch
-        average_loss = sum_of_losses / len(train_loss)  # Calculate the average loss for
-        y.append(average_loss)  # Append the average loss for the current epoch to the list of average losses
-    x = [i + 1 for i in range(len(y))]  # Create a list of epoch numbers corresponding to the training losses
+        sum_of_losses = sum(train_loss)
+        average_loss = sum_of_losses / len(train_loss)
+        y.append(average_loss) 
+
+    # Create a list of epoch numbers for plotting the training and testing losses over time
+    x = [i + 1 for i in range(len(y))]  
+
+    # Plot the training and testing losses over epochs to visualize the training process and evaluate the model's performance over time
     plt.plot(x, y)  # Plot the training losses over epochs to visualize the training process
     plt.plot(x, test_losses)  # Plot the test losses over epochs to visualize the testing process
     plt.xlabel("Epoch")  # Label for the x-axis of the plot
