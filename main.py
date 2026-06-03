@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     BATCH_SIZE = 64  # Define the batch size for training and testing
     LEARNING_RATE = 0.1  # Define the learning rate for the optimizer
-    NUMBER_OF_EPOCHS = 2  # Define the number of epochs for training the model
+    NUMBER_OF_EPOCHS = 10  # Define the number of epochs for training the model
     HIDDEN_SIZES = [784, 128, 64, 10]  # Define the size of the hidden layer in the neural network
 
     # Preprocess the MNIST dataset and obtain the training and testing data
@@ -41,11 +41,7 @@ if __name__ == "__main__":
         # Set the model to training mode
         model.train()
 
-        # Initialize a variable to accumulate the running loss during training
-        running_loss = 0.0
-
-        number_of_examples_passed = 0
-
+        # Initialize a list to store the losses for each batch during training for later analysis
         losses = []
 
         # Iterate through the training data in batches
@@ -60,10 +56,6 @@ if __name__ == "__main__":
             # Append the loss for the current batch to the list of losses for later analysis
             losses.append(loss.item())
 
-            # Accumulate the loss for the current batch to compute the average loss later
-            running_loss += loss.item()
-            number_of_examples_passed += len(images)
-
             # Backpropagate the loss and update the model parameters using the optimizer
             loss.backward() 
 
@@ -73,14 +65,7 @@ if __name__ == "__main__":
             # Clear the gradients for the next iteration
             optimiser.zero_grad()
 
-            if batch == 0:
-                print(f"Batch: {batch + 1}, Loss: {loss.item():>8f}")
-                print(pred[0].argmax())
-                print(labels[0].argmax())
-
-            if batch == 1:
-                print(f"Batch: {batch + 1}, Loss: {loss.item():>8f}")
-            
+            # Print the loss for every 100 batches to monitor the training process            
             if (batch + 1) % 100 == 0:
                 print(f"Batch: {batch + 1}, Loss: {loss.item():>8f}")
 
@@ -121,12 +106,15 @@ if __name__ == "__main__":
 
     print("Training complete!")
 
-    train_losses = [loss for epoch_losses in train_losses for loss in epoch_losses]  # Flatten the list of losses from all epochs into a single list
-    print(len(train_losses))
-    x = [i for i in range(len(train_losses))]  # Create a list of batch numbers corresponding to the training losses
-    plt.plot(x, train_losses)  # Plot the training losses over epochs to visualize the training process
-    plt.xlabel("Batch Number")  # Label for the x-axis of the plot
-    plt.ylabel("Loss")  # Label for the y-axis of the plot
+    y = []
+    for train_loss in train_losses:
+        sum_of_losses = sum(train_loss)  # Calculate the sum of losses for the current epoch
+        average_loss = sum_of_losses / len(train_loss)  # Calculate the average loss for
+        y.append(average_loss)  # Append the average loss for the current epoch to the list of average losses
+    x = [i + 1 for i in range(len(y))]  # Create a list of epoch numbers corresponding to the training losses
+    plt.plot(x, y)  # Plot the training losses over epochs to visualize the training process
+    plt.xlabel("Epoch")  # Label for the x-axis of the plot
+    plt.ylabel("Average Loss")  # Label for the y-axis of the plot
     plt.title("Training Loss")  # Title for the plot
     plt.show()
 
