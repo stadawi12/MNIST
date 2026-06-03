@@ -11,8 +11,8 @@ if __name__ == "__main__":
 
     BATCH_SIZE = 64  # Define the batch size for training and testing
     LEARNING_RATE = 0.1  # Define the learning rate for the optimizer
-    NUMBER_OF_EPOCHS = 10  # Define the number of epochs for training the model
-    HIDDEN_SIZES = [784, 128, 64, 10]  # Define the size of the hidden layer in the neural network
+    NUMBER_OF_EPOCHS = 20  # Define the number of epochs for training the model
+    HIDDEN_SIZES = [784, 128, 10]  # Define the size of the hidden layer in the neural network
 
     # Preprocess the MNIST dataset and obtain the training and testing data
     training_data_images, training_data_labels_one_hot, testing_data_images, testing_data_labels_one_hot = preprocess_data()
@@ -28,9 +28,11 @@ if __name__ == "__main__":
     # Create an instance of the SimpleNN class    
     model = SimpleNN(HIDDEN_SIZES)
 
-    loss_function = CrossEntropyLoss()  # Define the loss function for training the model
+    # Define the loss function for training the model
+    loss_function = CrossEntropyLoss()  
 
-    optimiser = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE, momentum=0.9)  # Define the optimizer for updating model parameters
+    # Define the optimizer for updating the model parameters during training
+    optimiser = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE, momentum=0.9)
 
     # Define the training function to train the model on the training dataset
     def train(model, train_loader, loss_function, optimiser):
@@ -73,23 +75,50 @@ if __name__ == "__main__":
 
     # Define the testing function to evaluate the model on the testing dataset
     def test(model, test_loader, loss_function):
-        number_of_batches = len(test_loader)
-        number_of_samples = len(test_loader.dataset)
-        model.eval()  # Set the model to evaluation mode
-        correct = 0
-        running_test_loss = 0.0
-        with torch.no_grad():  # Disable gradient computation for testing
-            for images, labels in test_loader:
-                pred = model(images)  # Forward pass through the model to get predictions
-                test_loss = loss_function(pred, labels)  # Compute the loss for the current batch and accumulate it
-                running_test_loss += test_loss.item()  # Accumulate the loss for the current batch to compute the average loss later
-                correct += (pred.argmax(1) == labels.argmax(1)).type(torch.float).sum().item()  # Count correct predictions
 
-        running_test_loss /= number_of_batches  # Compute average test loss
-        accuracy = correct / number_of_samples  # Compute accuracy of the model on the test dataset
-        print(f"Test Error: \n Accuracy: {(100*accuracy):>0.1f}%, Avg loss: {running_test_loss:>8f} \n")  # Print the test results
+        # Get the total number of batches in the testing dataset
+        number_of_batches = len(test_loader)
+        
+        # Get the total number of samples in the testing dataset
+        number_of_samples = len(test_loader.dataset)
+
+        # Set the model to evaluation mode to disable dropout and batch normalization layers during testing
+        model.eval()
+
+        # Initialize a variable to count the number of correct predictions made by the model on the testing dataset
+        correct = 0
+
+        # Initialize a variable to accumulate the total loss over the testing dataset for later analysis
+        test_loss = 0.0
+
+        # Disable gradient computation during testing to save memory and computational resources since we are not updating the model parameters
+        with torch.no_grad():
+
+            # Iterate through the testing data in batches
+            for images, labels in test_loader:
+                
+                # Forward pass through the model to get predictions for the current batch of testing data
+                pred = model(images)
+
+                # Compute the loss for the current batch and accumulate it to calculate the average test loss later
+                test_loss += loss_function(pred, labels).item()
+
+                # Compare the predicted class with the true labels and count the number of correct predictions for the current batch
+                correct += (pred.argmax(1) == labels.argmax(1)).type(torch.float).sum().item()
+
+        # Compute the average test loss by dividing the accumulated test loss by the total number of batches in the testing dataset
+        test_loss /= number_of_batches
+
+        # Compute the accuracy of the model on the testing dataset by dividing the number of correct predictions by the total number of samples in the testing dataset
+        accuracy = correct / number_of_samples
+
+        print(f"Test Error: \n Accuracy: {(100*accuracy):>0.1f}%, Avg loss: {test_loss:>8f} \n")  # Print the test results
+
+        # return the average test loss and accuracy for analysis after testing is complete
+        return test_loss, accuracy
 
     train_losses = []  # Initialize a list to store the losses during training
+    test_losses = []  # Initialize a list to store the losses during testing
     
     # Train the model for the specified number of epochs
     for epoch in range(NUMBER_OF_EPOCHS):
@@ -102,7 +131,10 @@ if __name__ == "__main__":
         train_losses.append(train_epoch_losses)
 
         # Evaluate the model on the test dataset after each epoch to monitor its performance
-        test(model, test_loader, loss_function) 
+        test_loss, accuracy = test(model, test_loader, loss_function)
+
+        # Append the test loss for the current epoch to the list of test losses for later analysis
+        test_losses.append(test_loss)
 
     print("Training complete!")
 
@@ -113,9 +145,11 @@ if __name__ == "__main__":
         y.append(average_loss)  # Append the average loss for the current epoch to the list of average losses
     x = [i + 1 for i in range(len(y))]  # Create a list of epoch numbers corresponding to the training losses
     plt.plot(x, y)  # Plot the training losses over epochs to visualize the training process
+    plt.plot(x, test_losses)  # Plot the test losses over epochs to visualize the testing process
     plt.xlabel("Epoch")  # Label for the x-axis of the plot
     plt.ylabel("Average Loss")  # Label for the y-axis of the plot
-    plt.title("Training Loss")  # Title for the plot
+    plt.title("Training and Testing Loss")  # Title for the plot
+    plt.legend(["Training Loss", "Testing Loss"])  # Add a legend to the plot to differentiate between training and testing losses
     plt.show()
 
     # save the trained model to a file
