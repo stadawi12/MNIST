@@ -4,7 +4,7 @@ A small handwritten-digit classification project built with PyTorch. It loads th
 
 ![image alt](image.png)
 
-<img src="image.png" width=600 height=300>
+<img src="image.png" width=50% height=50%>
 
 ## What the project does
 
