@@ -2,6 +2,8 @@
 
 A small handwritten-digit classification project built with PyTorch. It loads the MNIST IDX files, preprocesses the images and labels, trains a fully connected neural network, and plots training and test loss across epochs.
 
+![image alt](image.png)
+
 ## What the project does
 
 - Loads the MNIST training and test data from the `dataset/` directory.
