@@ -3,3 +3,4 @@ dataset/t10k-labels-idx1-ubyte
 dataset/train-images-idx3-ubyte
 dataset/train-labels-idx1-ubyte
 testing.py
+image.png
