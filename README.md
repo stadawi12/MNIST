@@ -20,7 +20,6 @@ A small handwritten-digit classification project built with PyTorch. It loads th
 | `preprocess_data.py` | Loads MNIST and normalizes images and one-hot encodes labels. |
 | `dataloader.py` | Defines the PyTorch dataset wrapper; running it directly displays a sample image. |
 | `test_trained_models.py` | Loads saved weights and evaluates them on the MNIST test set. |
-| `testing.py` | A small standalone experiment with `CrossEntropyLoss`. |
 | `dataset/` | MNIST IDX image and label files used by the project. |
 | `trained_models/` | Location of the included model checkpoint. |
 
